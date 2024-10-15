@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 0;
+  text-align: center;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.social-links {
+  margin-top: 10px;
+}
+
+.social-icon {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  transition: color 0.3s;
+}
+
+.social-icon:hover {
+  color: #3498db; /* Màu xanh sáng khi hover */
+}
+
+@media (max-width: 600px) {
+  .social-icon {
+    display: block;
+    margin: 5px 0;
+  }
+}

@@ -1,6 +1,7 @@
-import './style.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import './style.css';
 
 const TodoList = (props) => {
   const { handleDelete, todoList } = props;
