@@ -5,11 +5,11 @@ import Header from './components/layouts/header';
 
 const App = () => {
   return (
-    <>
+    <div style={{ padding: '0 200px' }}>
       <Header />
       <Outlet />
       <Footer />
-    </>
+    </div>
   );
 };
 

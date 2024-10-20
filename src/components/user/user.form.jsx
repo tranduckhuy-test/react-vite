@@ -1,25 +1,33 @@
 import { createUserAPI } from '../../services/api.service';
-import { Button, Input, notification } from 'antd';
+import { Button, Input, Modal, notification } from 'antd';
 import { useState } from 'react';
 
-const UseForm = () => {
+const UseForm = ({ onUserCreated }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const resetAndCloseModal = () => {
+    setFullName('');
+    setEmail('');
+    setPassword('');
+    setPhone('');
+    setIsModalOpen(false);
+  };
+
+  // Handle create user button
   const handleCreateBtn = async () => {
     try {
       const res = await createUserAPI(fullName, email, password, phone);
       notification.success({
         message: 'User created successfully',
-        description: 'User has been created successfully',
+        description: `User '${res.data.fullName}' has been created successfully`,
       });
 
-      setFullName('');
-      setEmail('');
-      setPassword('');
-      setPhone('');
+      onUserCreated();
+      resetAndCloseModal();
     } catch (error) {
       const errorMessage =
         error.response && error.response.data
@@ -28,7 +36,7 @@ const UseForm = () => {
 
       notification.error({
         message: 'User creation failed',
-        description: errorMessage,
+        description: JSON.stringify(errorMessage),
       });
     }
   };
@@ -37,9 +45,7 @@ const UseForm = () => {
     <div
       className="user-form"
       style={{
-        margin: '10px 0 50px 0',
-        display: 'flex',
-        justifyContent: 'center',
+        padding: '20px',
       }}
     >
       <div
@@ -47,8 +53,23 @@ const UseForm = () => {
           display: 'flex',
           gap: '15px',
           flexDirection: 'column',
-          minWidth: '500px',
         }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div></div>
+          <Button type="primary" onClick={() => setIsModalOpen(true)}>
+            Create User
+          </Button>
+        </div>
+      </div>
+      <Modal
+        title="Create User"
+        open={isModalOpen}
+        width={600}
+        okText="Create"
+        onOk={handleCreateBtn}
+        onCancel={() => setIsModalOpen(false)}
+        maskClosable={false}
       >
         <div>
           <span>Full Name</span>
@@ -78,10 +99,7 @@ const UseForm = () => {
             onChange={(event) => setPhone(event.target.value)}
           />
         </div>
-        <Button type="primary" onClick={handleCreateBtn}>
-          Create User
-        </Button>
-      </div>
+      </Modal>
     </div>
   );
 };

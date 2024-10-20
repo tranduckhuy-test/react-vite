@@ -1,80 +1,144 @@
-import { Space, Table, Tag } from 'antd';
-import React from 'react';
+import { deleteUserAPI, getAllUsersAPI } from '../../services/api.service';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Popconfirm, Space, Table, Tag, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
 
-const UserTable = () => {
+import UpdateUserModal from './user.form.update';
+import ViewUserDetail from './user.view.detail';
+
+const UserTable = ({ refresh, handleRefresh }) => {
+  const [dataUsers, setDataUsers] = useState([]);
+  const [dataUpdate, setDataUpdate] = useState(null);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
+      title: 'Full Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      render: (_, record) => (
+        <a
+          href="#!"
+          onClick={() => {
+            setIsDetailOpen(true);
+            setDataUpdate(record);
+          }}
+        >
+          {record.fullName}
+        </a>
       ),
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      render: (text) => {
+        let color = text === 'ADMIN' ? 'geekblue' : 'green';
+        return (
+          <Tag color={color} key={text}>
+            {text.toUpperCase()}
+          </Tag>
+        );
+      },
     },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
+          <EditOutlined
+            onClick={() => {
+              setIsUpdateModalOpen(true);
+              setDataUpdate(record);
+            }}
+            style={{ color: 'orange', cursor: 'pointer', fontSize: '16px' }}
+          />
+          <Popconfirm
+            title="Delete the user"
+            description="Are you sure to delete this user?"
+            onConfirm={() => handleDeleteUserAPI(record._id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined
+              style={{ color: 'red', cursor: 'pointer', fontSize: '16px' }}
+            />
+          </Popconfirm>
         </Space>
       ),
     },
   ];
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ];
 
-  return <Table columns={columns} dataSource={data} />;
+  useEffect(() => {
+    loadUsers();
+  }, [refresh]);
+
+  const handleDeleteUserAPI = async (id) => {
+    try {
+      await deleteUserAPI(id);
+      notification.success({
+        message: 'User deleted successfully',
+        description: `User has been deleted successfully`,
+      });
+      handleRefresh();
+    } catch (error) {
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data.message
+          : error.message;
+
+      notification.error({
+        message: 'User deletion failed',
+        description: errorMessage,
+      });
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      const response = await getAllUsersAPI();
+      setDataUsers(response.data);
+    } catch (error) {
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data.message
+          : error.message;
+
+      notification.error({
+        message: 'Failed to load users',
+        description: errorMessage,
+      });
+    }
+  };
+
+  return (
+    <>
+      <Table columns={columns} dataSource={dataUsers} rowKey={'_id'} />
+      <UpdateUserModal
+        isUpdateModalOpen={isUpdateModalOpen}
+        setIsUpdateModalOpen={setIsUpdateModalOpen}
+        dataUpdate={dataUpdate}
+        onUserUpdated={handleRefresh}
+      />
+
+      <ViewUserDetail
+        isDetailOpen={isDetailOpen}
+        setIsDetailOpen={setIsDetailOpen}
+        dataDetail={dataUpdate}
+      />
+    </>
+  );
 };
 
 export default UserTable;
