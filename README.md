@@ -20,5 +20,3 @@ https://nodejs.org/download/release/v22.2.0/
 5. Run the project: `npm run preview`.
 
 ---
-
----
