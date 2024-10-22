@@ -1,4 +1,4 @@
-import UseForm from '../components/user/user.form';
+import UserForm from '../components/user/user.form';
 import UserTable from '../components/user/user.table';
 import { useState } from 'react';
 
@@ -12,7 +12,7 @@ const UserPage = () => {
   return (
     <div style={{ padding: '20px', marginBottom: '50px' }}>
       <div style={{ padding: '0px' }}>
-        <UseForm onUserCreated={handleRefresh} />
+        <UserForm onUserCreated={handleRefresh} />
         <UserTable refresh={refresh} handleRefresh={handleRefresh} />
       </div>
     </div>

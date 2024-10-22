@@ -24,7 +24,7 @@ const UpdateUserModal = ({
 
   const handleSaveBtn = async () => {
     try {
-      const res = await updateUserAPI(id, fullName, phone);
+      await updateUserAPI(id, fullName, phone);
       notification.success({
         message: 'User updated successfully',
         description: `User has been updated successfully`,

@@ -2,7 +2,7 @@ import { createUserAPI } from '../../services/api.service';
 import { Button, Input, Modal, notification } from 'antd';
 import { useState } from 'react';
 
-const UseForm = ({ onUserCreated }) => {
+const UserForm = ({ onUserCreated }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -104,4 +104,4 @@ const UseForm = ({ onUserCreated }) => {
   );
 };
 
-export default UseForm;
+export default UserForm;
