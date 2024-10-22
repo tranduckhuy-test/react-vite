@@ -136,6 +136,7 @@ const UserTable = ({ refresh, handleRefresh }) => {
         isDetailOpen={isDetailOpen}
         setIsDetailOpen={setIsDetailOpen}
         dataDetail={dataUpdate}
+        handleRefresh={handleRefresh}
       />
     </>
   );
