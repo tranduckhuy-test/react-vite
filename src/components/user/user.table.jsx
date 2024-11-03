@@ -12,7 +12,17 @@ const UserTable = ({ refresh, handleRefresh }) => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+
   const columns = [
+    {
+      title: 'No.',
+      render: (_, record, index) => {
+        return <>{index + 1}</>;
+      },
+    },
     {
       title: 'Full Name',
       dataIndex: 'fullName',
@@ -80,10 +90,6 @@ const UserTable = ({ refresh, handleRefresh }) => {
     },
   ];
 
-  useEffect(() => {
-    loadUsers();
-  }, [refresh]);
-
   const handleDeleteUserAPI = async (id) => {
     try {
       await deleteUserAPI(id);
@@ -105,26 +111,62 @@ const UserTable = ({ refresh, handleRefresh }) => {
     }
   };
 
-  const loadUsers = async () => {
-    try {
-      const response = await getAllUsersAPI();
-      setDataUsers(response.data);
-    } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.message
-          : error.message;
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const response = await getAllUsersAPI(current, pageSize);
+        if (response.data) {
+          setDataUsers(response.data.result);
+          setCurrent(response.data.meta.current);
+          setPageSize(response.data.meta.pageSize);
+          setTotal(response.data.meta.total);
+        }
+      } catch (error) {
+        const errorMessage =
+          error.response && error.response.data
+            ? error.response.data.message
+            : error.message;
 
-      notification.error({
-        message: 'Failed to load users',
-        description: errorMessage,
-      });
+        notification.error({
+          message: 'Failed to load users',
+          description: errorMessage,
+        });
+      }
+    };
+
+    loadUsers();
+  }, [refresh, current, pageSize]);
+
+  const onChange = (pagination, filters) => {
+    if (+pagination !== +current) {
+      setCurrent(+pagination);
+    }
+    if (+filters !== +pageSize) {
+      setPageSize(+filters);
     }
   };
 
   return (
     <>
-      <Table columns={columns} dataSource={dataUsers} rowKey={'_id'} />
+      <Table
+        columns={columns}
+        dataSource={dataUsers}
+        rowKey={'_id'}
+        pagination={{
+          current: current,
+          pageSize: pageSize,
+          showSizeChanger: true,
+          total: total,
+          showTotal: (total, range) => {
+            return (
+              <div>
+                {range[0]} - {range[1]} of {total} rows
+              </div>
+            );
+          },
+          onChange: onChange,
+        }}
+      />
       <UpdateUserModal
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}

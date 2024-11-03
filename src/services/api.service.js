@@ -3,8 +3,9 @@ import axios from './axios.customize';
 const USER_URL = '/user';
 const FILE_UPLOAD_URL = '/file/upload';
 
-const getAllUsersAPI = () => {
-  return axios.get(USER_URL);
+const getAllUsersAPI = (current, pageSize) => {
+  let url = `${USER_URL}?current=${current}&pageSize=${pageSize}`;
+  return axios.get(url);
 };
 
 const createUserAPI = (fullName, email, password, phone) => {
