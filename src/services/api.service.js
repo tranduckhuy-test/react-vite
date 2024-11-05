@@ -1,7 +1,9 @@
 import axios from './axios.customize';
 
 const USER_URL = '/user';
+const USER_REGISTER_URL = 'user/register';
 const FILE_UPLOAD_URL = '/file/upload';
+const LOGIN_URL = '/auth/login';
 
 const getAllUsersAPI = (current, pageSize) => {
   let url = `${USER_URL}?current=${current}&pageSize=${pageSize}`;
@@ -48,10 +50,33 @@ const uploadAvatarAPI = (file, folder) => {
   return axios.post(FILE_UPLOAD_URL, formData, config);
 };
 
+const registerUserAPI = (fullName, email, password, phone) => {
+  const data = {
+    fullName: fullName,
+    email: email,
+    password: password,
+    phone: phone,
+  };
+
+  return axios.post(USER_REGISTER_URL, data);
+};
+
+const loginAPI = (email, password) => {
+  const data = {
+    username: email,
+    password: password,
+    delay: 3000,
+  };
+
+  return axios.post(LOGIN_URL, data);
+};
+
 export {
   getAllUsersAPI,
   createUserAPI,
   updateUserAPI,
   deleteUserAPI,
   uploadAvatarAPI,
+  registerUserAPI,
+  loginAPI,
 };

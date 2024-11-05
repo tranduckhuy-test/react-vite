@@ -6,7 +6,7 @@ const UpdateUserModal = ({
   isUpdateModalOpen,
   setIsUpdateModalOpen,
   dataUpdate,
-  onUserUpdated,
+  loadUser,
 }) => {
   const [id, setId] = useState('');
   const [fullName, setFullName] = useState('');
@@ -30,7 +30,7 @@ const UpdateUserModal = ({
         description: `User has been updated successfully`,
       });
       setIsUpdateModalOpen(false);
-      onUserUpdated();
+      await loadUser();
     } catch (error) {
       const errorMessage =
         error.response && error.response.data

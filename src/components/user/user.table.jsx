@@ -20,7 +20,7 @@ const UserTable = ({ refresh, handleRefresh }) => {
     {
       title: 'No.',
       render: (_, record, index) => {
-        return <>{index + 1}</>;
+        return <>{index + 1 + (current - 1) * pageSize}</>;
       },
     },
     {
@@ -116,10 +116,18 @@ const UserTable = ({ refresh, handleRefresh }) => {
       try {
         const response = await getAllUsersAPI(current, pageSize);
         if (response.data) {
-          setDataUsers(response.data.result);
-          setCurrent(response.data.meta.current);
-          setPageSize(response.data.meta.pageSize);
-          setTotal(response.data.meta.total);
+          const { result, meta } = response.data;
+
+          setDataUsers(result);
+          if (+meta.total !== +total) {
+            setTotal(+meta.total);
+          }
+          if (+meta.current !== +current) {
+            setCurrent(+meta.current);
+          }
+          if (meta.total !== total) {
+            setTotal(meta.total);
+          }
         }
       } catch (error) {
         const errorMessage =
@@ -135,14 +143,16 @@ const UserTable = ({ refresh, handleRefresh }) => {
     };
 
     loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh, current, pageSize]);
 
-  const onChange = (pagination, filters) => {
-    if (+pagination !== +current) {
-      setCurrent(+pagination);
+  const onChange = (pagination) => {
+    if (+pagination.current !== +current) {
+      console.log('current change from', current, 'to', pagination.current);
+      setCurrent(+pagination.current);
     }
-    if (+filters !== +pageSize) {
-      setPageSize(+filters);
+    if (+pagination.pageSize !== +pageSize) {
+      setPageSize(+pagination.pageSize);
     }
   };
 
@@ -164,8 +174,8 @@ const UserTable = ({ refresh, handleRefresh }) => {
               </div>
             );
           },
-          onChange: onChange,
         }}
+        onChange={onChange}
       />
       <UpdateUserModal
         isUpdateModalOpen={isUpdateModalOpen}

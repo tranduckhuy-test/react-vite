@@ -6,7 +6,7 @@ const ViewUserDetail = ({
   isDetailOpen,
   setIsDetailOpen,
   dataDetail,
-  handleRefresh,
+  loadUser,
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -58,7 +58,7 @@ const ViewUserDetail = ({
         setIsDetailOpen(false);
         setSelectedFile(null);
         setPreview(null);
-        handleRefresh();
+        await loadUser();
       } else {
         notification.error({
           message: 'Error',

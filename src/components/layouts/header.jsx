@@ -2,6 +2,8 @@ import {
   BookOutlined,
   HomeOutlined,
   LoginOutlined,
+  LogoutOutlined,
+  SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -30,41 +32,23 @@ const Header = () => {
       label: <Link to="/books">Books</Link>,
       key: 'books',
       icon: <BookOutlined />,
-      children: [
-        {
-          type: 'group',
-          label: 'Reference Books',
-          children: [
-            {
-              label: 'Option 1',
-              key: 'setting:1',
-            },
-            {
-              label: 'Option 2',
-              key: 'setting:2',
-            },
-          ],
-        },
-        {
-          type: 'group',
-          label: 'Textbooks',
-          children: [
-            {
-              label: 'Option 3',
-              key: 'setting:3',
-            },
-            {
-              label: 'Option 4',
-              key: 'setting:4',
-            },
-          ],
-        },
-      ],
     },
     {
-      label: <Link to="/login">Login</Link>,
-      key: 'login',
-      icon: <LoginOutlined />,
+      label: 'Settings',
+      key: 'settings',
+      icon: <SettingOutlined />,
+      children: [
+        {
+          label: <Link to="/login">Login</Link>,
+          key: 'login',
+          icon: <LoginOutlined />,
+        },
+        {
+          label: <Link to="/logout">Logout</Link>,
+          key: 'logout',
+          icon: <LogoutOutlined />,
+        },
+      ],
     },
   ];
 
