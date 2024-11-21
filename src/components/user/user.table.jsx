@@ -148,7 +148,6 @@ const UserTable = ({ refresh, handleRefresh }) => {
 
   const onChange = (pagination) => {
     if (+pagination.current !== +current) {
-      console.log('current change from', current, 'to', pagination.current);
       setCurrent(+pagination.current);
     }
     if (+pagination.pageSize !== +pageSize) {

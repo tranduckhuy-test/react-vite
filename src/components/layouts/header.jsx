@@ -1,23 +1,44 @@
+import { logoutAPI } from '../../services/api.service';
+import { AuthContext } from '../context/auth.context';
 import {
   BookOutlined,
   HomeOutlined,
   LoginOutlined,
   LogoutOutlined,
-  SettingOutlined,
+  ProfileOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Menu } from 'antd';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Menu, message } from 'antd';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [current, setCurrent] = useState('');
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const onClick = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
   };
 
-  const items = [
+  const handleLogout = async () => {
+    const response = await logoutAPI();
+    if (response.data) {
+      localStorage.removeItem('access_token');
+      setUser({
+        email: '',
+        phone: '',
+        fullName: '',
+        role: '',
+        avatar: '',
+        id: '',
+      });
+      message.success('Logout successfully');
+      navigate('/');
+    }
+  };
+
+  const leftItems = [
     {
       label: <Link to="/">Home</Link>,
       key: 'home',
@@ -33,32 +54,46 @@ const Header = () => {
       key: 'books',
       icon: <BookOutlined />,
     },
-    {
-      label: 'Settings',
-      key: 'settings',
-      icon: <SettingOutlined />,
-      children: [
-        {
+  ];
+
+  const rightItems = [
+    user.fullName
+      ? {
+          label: `Welcome ${user.fullName}`,
+          key: 'settings',
+          icon: <ProfileOutlined />,
+          children: [
+            {
+              label: <span onClick={handleLogout}>Logout</span>,
+              key: 'logout',
+              icon: <LogoutOutlined />,
+            },
+          ],
+        }
+      : {
           label: <Link to="/login">Login</Link>,
           key: 'login',
           icon: <LoginOutlined />,
         },
-        {
-          label: <Link to="/logout">Logout</Link>,
-          key: 'logout',
-          icon: <LogoutOutlined />,
-        },
-      ],
-    },
   ];
 
   return (
-    <Menu
-      onClick={onClick}
-      selectedKeys={[current]}
-      mode="horizontal"
-      items={items}
-    />
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Menu
+        onClick={onClick}
+        selectedKeys={[current]}
+        mode="horizontal"
+        items={leftItems}
+        style={{ flex: 1 }}
+      />
+      <Menu
+        onClick={onClick}
+        selectedKeys={[current]}
+        mode="horizontal"
+        items={rightItems}
+        style={{ marginLeft: 'auto', minWidth: '91px' }}
+      />
+    </div>
   );
 };
 

@@ -4,6 +4,8 @@ const USER_URL = '/user';
 const USER_REGISTER_URL = 'user/register';
 const FILE_UPLOAD_URL = '/file/upload';
 const LOGIN_URL = '/auth/login';
+const LOGOUT_URL = '/auth/logout';
+const ACCOUNT_URL = '/auth/account';
 
 const getAllUsersAPI = (current, pageSize) => {
   let url = `${USER_URL}?current=${current}&pageSize=${pageSize}`;
@@ -65,10 +67,18 @@ const loginAPI = (email, password) => {
   const data = {
     username: email,
     password: password,
-    delay: 3000,
+    delay: 1000,
   };
 
   return axios.post(LOGIN_URL, data);
+};
+
+const logoutAPI = () => {
+  return axios.post(LOGOUT_URL);
+};
+
+const getAccountAPI = () => {
+  return axios.get(ACCOUNT_URL);
 };
 
 export {
@@ -79,4 +89,6 @@ export {
   uploadAvatarAPI,
   registerUserAPI,
   loginAPI,
+  logoutAPI,
+  getAccountAPI,
 };

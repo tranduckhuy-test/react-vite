@@ -1,7 +1,8 @@
+import { AuthContext } from '../components/context/auth.context';
 import { loginAPI } from '../services/api.service';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Form, Input, Row, notification } from 'antd';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -9,12 +10,15 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  const { setUser } = useContext(AuthContext);
+
   const onFinish = async (values) => {
     try {
       setLoading(true);
       const response = await loginAPI(values.email, values.password);
-
       if (response.data) {
+        localStorage.setItem('access_token', response.data.access_token);
+        setUser(response.data.user);
         notification.success({
           message: 'Success',
           description: 'Login successfully',
@@ -38,6 +42,12 @@ const LoginPage = () => {
         description: JSON.stringify(errorMessage),
       });
       setLoading(false);
+    }
+  };
+
+  const handleLoginEnter = (e) => {
+    if (e.key === 'Enter') {
+      form.submit();
     }
   };
 
@@ -87,7 +97,10 @@ const LoginPage = () => {
               ]}
               style={{ marginBottom: '28px' }}
             >
-              <Input.Password autoComplete="current-password" />
+              <Input.Password
+                autoComplete="current-password"
+                onKeyDown={handleLoginEnter}
+              />
             </Form.Item>
 
             <Form.Item>
