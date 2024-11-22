@@ -38,7 +38,7 @@ const deleteUserAPI = (id) => {
   return axios.delete(`${USER_URL}/${id}`);
 };
 
-const uploadAvatarAPI = (file, folder) => {
+const uploadImageAPI = (file, folder) => {
   const config = {
     headers: {
       'upload-type': folder,
@@ -86,7 +86,7 @@ export {
   createUserAPI,
   updateUserAPI,
   deleteUserAPI,
-  uploadAvatarAPI,
+  uploadImageAPI,
   registerUserAPI,
   loginAPI,
   logoutAPI,
