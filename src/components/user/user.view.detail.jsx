@@ -1,4 +1,4 @@
-import { updateUserAPI, uploadAvatarAPI } from '../../services/api.service';
+import { updateUserAPI, uploadImageAPI } from '../../services/api.service';
 import { Button, Drawer, notification } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
@@ -6,7 +6,7 @@ const ViewUserDetail = ({
   isDetailOpen,
   setIsDetailOpen,
   dataDetail,
-  loadUser,
+  handleRefresh,
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -40,7 +40,7 @@ const ViewUserDetail = ({
   };
 
   const handleUpdateUserAvatar = async () => {
-    const resUpload = await uploadAvatarAPI(selectedFile, 'avatar');
+    const resUpload = await uploadImageAPI(selectedFile, 'avatar');
     if (resUpload.data) {
       const newAvatar = resUpload.data.fileUploaded;
       const resUpdateUser = await updateUserAPI(
@@ -58,7 +58,7 @@ const ViewUserDetail = ({
         setIsDetailOpen(false);
         setSelectedFile(null);
         setPreview(null);
-        await loadUser();
+        handleRefresh();
       } else {
         notification.error({
           message: 'Error',

@@ -120,13 +120,14 @@ const UserTable = ({ refresh, handleRefresh }) => {
 
           setDataUsers(result);
           if (+meta.total !== +total) {
+            const maxPage = Math.ceil(meta.total / pageSize);
+
+            if (current > maxPage && current !== 1) {
+              setCurrent(maxPage);
+              return;
+            }
+
             setTotal(+meta.total);
-          }
-          if (+meta.current !== +current) {
-            setCurrent(+meta.current);
-          }
-          if (meta.total !== total) {
-            setTotal(meta.total);
           }
         }
       } catch (error) {
@@ -180,7 +181,7 @@ const UserTable = ({ refresh, handleRefresh }) => {
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         dataUpdate={dataUpdate}
-        onUserUpdated={handleRefresh}
+        handleRefresh={handleRefresh}
       />
 
       <ViewUserDetail
