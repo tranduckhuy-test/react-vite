@@ -23,7 +23,7 @@ const LoginPage = () => {
           message: 'Success',
           description: 'Login successfully',
         });
-        navigate('/users');
+        navigate('/');
       } else {
         notification.error({
           message: 'Failed',
