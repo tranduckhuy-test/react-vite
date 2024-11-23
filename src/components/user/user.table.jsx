@@ -11,6 +11,7 @@ const UserTable = ({ refresh, handleRefresh }) => {
   const [dataUpdate, setDataUpdate] = useState(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -113,6 +114,7 @@ const UserTable = ({ refresh, handleRefresh }) => {
 
   useEffect(() => {
     const loadUsers = async () => {
+      setLoadingTable(true);
       try {
         const response = await getAllUsersAPI(current, pageSize);
         if (response.data) {
@@ -130,7 +132,9 @@ const UserTable = ({ refresh, handleRefresh }) => {
             setTotal(+meta.total);
           }
         }
+        setLoadingTable(false);
       } catch (error) {
+        setLoadingTable(false);
         const errorMessage =
           error.response && error.response.data
             ? error.response.data.message
@@ -176,6 +180,7 @@ const UserTable = ({ refresh, handleRefresh }) => {
           },
         }}
         onChange={onChange}
+        loading={loadingTable}
       />
       <UpdateUserModal
         isUpdateModalOpen={isUpdateModalOpen}

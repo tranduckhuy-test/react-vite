@@ -42,8 +42,6 @@ const UpdateBookModal = ({
     }
   }, [dataUpdate]);
 
-  console.log(dataUpdate);
-
   const handleSaveBtn = async () => {
     if (
       !title ||

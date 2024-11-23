@@ -12,6 +12,7 @@ const BookTable = ({ refresh, handleRefresh }) => {
   const [dataUpdate, setDataUpdate] = useState(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -102,6 +103,7 @@ const BookTable = ({ refresh, handleRefresh }) => {
   useEffect(() => {
     const loadBooks = async () => {
       try {
+        setLoadingTable(true);
         const res = await getAllBooksAPI(current, pageSize);
 
         if (res.data) {
@@ -119,7 +121,9 @@ const BookTable = ({ refresh, handleRefresh }) => {
             setTotal(+meta.total);
           }
         }
+        setLoadingTable(false);
       } catch (error) {
+        setLoadingTable(false);
         const errorMessage =
           error.response && error.response.data
             ? error.response.data.message
@@ -187,6 +191,7 @@ const BookTable = ({ refresh, handleRefresh }) => {
           },
         }}
         onChange={onChange}
+        loading={loadingTable}
       />
       <UpdateBookModal
         isUpdateModalOpen={isUpdateModalOpen}
