@@ -9,13 +9,29 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Menu, message } from 'antd';
-import { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [current, setCurrent] = useState('');
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location && location.pathname) {
+      const allRoutes = ['users', 'books'];
+      const currentRoute = allRoutes.find(
+        (route) => `/${route}` === location.pathname,
+      );
+
+      if (currentRoute) {
+        setCurrent(currentRoute);
+      } else {
+        setCurrent('home');
+      }
+    }
+  }, [location]);
 
   const onClick = (e) => {
     setCurrent(e.key);
