@@ -1,4 +1,7 @@
 import axios from 'axios';
+import NProgress from 'nprogress';
+
+NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -7,6 +10,7 @@ const instance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   (config) => {
+    NProgress.start();
     if (
       typeof window !== 'undefined' &&
       window &&
@@ -19,6 +23,7 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
+    NProgress.done();
     return Promise.reject(error);
   },
 );
@@ -26,12 +31,14 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   (response) => {
+    NProgress.done();
     if (response.data && response.data.data) {
       return response.data;
     }
     return response;
   },
   (error) => {
+    NProgress.done();
     return Promise.reject(error);
   },
 );

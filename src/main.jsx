@@ -1,3 +1,4 @@
+import 'nprogress/nprogress.css';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
